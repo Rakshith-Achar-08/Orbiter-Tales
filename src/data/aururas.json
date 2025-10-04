@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Aurora Borealis",
+    "location": "Northern Hemisphere",
+    "image": "aurora.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Aurora Australis",
+    "location": "Southern Hemisphere",
+    "image": "aurora.jpg"
+  }
+]

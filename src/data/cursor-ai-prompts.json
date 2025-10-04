@@ -1,0 +1,145 @@
+{
+  "characterVoices": {
+    "flary": {
+      "introduction": "Hi kids! I'm Flary, an X-class solar flare! I'm born from twisted magnetic fields on the Sun that snap and reconnect, releasing energy as powerful as a billion hydrogen bombs! My energy travels at the speed of light - 186,000 miles per second - reaching Earth in just 8 minutes!",
+      "journey": "I'm traveling at the speed of light, bringing intense radiation across the electromagnetic spectrum - from X-rays to radio waves! My energy is so powerful that I can affect technology on Earth!",
+      "radiationStorm": "I'm accelerating charged particles - electrons and protons - into space at incredible speeds! The fastest particles can travel 93 million miles from Sun to Earth in just 30 minutes, creating a radiation storm!",
+      "cme": "I'm creating a Coronal Mass Ejection - an enormous cloud of electrically charged plasma! This CME can blast billions of tons of material into space, traveling at millions of miles per hour!",
+      "earthApproach": "I'm approaching Earth's magnetic field! When I interact with Earth's magnetosphere, I can trigger geomagnetic storms that affect technology and create beautiful auroras!",
+      "auroraCreation": "My charged particles follow Earth's magnetic field lines to the poles, where they collide with atoms in the atmosphere, creating the aurora borealis and australis - nature's own light show!",
+      "technologyImpact": "I can disrupt radio communications, affect GPS signals, and even cause power grid fluctuations! But I also create the most beautiful auroras that pilots like Anna can see from the sky!",
+      "solarCycle": "I'm part of the Sun's 11-year activity cycle! During solar maximum, there are more sunspots, solar flares, and CMEs like me. NASA's fleet of spacecraft monitors every event!"
+    },
+    "anna": {
+      "introduction": "Hello! I'm Anna, a commercial airline pilot. Today, I'm experiencing the effects of Flary's solar storm firsthand! Solar storms can disrupt my radio communications, affect GPS navigation, and even cause power grid fluctuations. But they also create the most beautiful auroras I've ever seen!",
+      "flying": "I'm flying at 35,000 feet, and I can see the aurora borealis dancing above me! The charged particles from Flary are following Earth's magnetic field lines to the poles, creating these incredible green, pink, and purple lights!",
+      "instruments": "My navigation instruments are showing some interference from the solar storm! The geomagnetic storm is affecting my GPS signals and radio communications, but it's also creating this spectacular light show in the sky!",
+      "radiation": "At high altitudes, I'm exposed to more radiation from Flary's solar storm. The charged particles can penetrate deeper into the atmosphere, but my aircraft's shielding helps protect me and my passengers!",
+      "auroraColors": "The aurora colors tell a story! Green auroras happen when oxygen atoms are excited at lower altitudes, while red auroras occur at higher altitudes. Blue and purple auroras come from nitrogen molecules!",
+      "technologyImpact": "Solar storms like Flary can cause radio blackouts, disrupt satellite communications, and even affect power grids on the ground. That's why we monitor space weather so carefully in aviation!",
+      "learning": "I'm learning how the Sun's activity directly affects my daily work! Flary's journey from the Sun to Earth shows me the incredible power of space weather and its impact on our technology!",
+      "excitement": "This is incredible! I never knew that a solar flare from 93 million miles away could create such beautiful auroras and affect my flight operations!"
+    },
+    "auroraSpirit": {
+      "introduction": "Greetings! I am the Aurora Spirit, born from the interaction between Flary's charged particles and Earth's magnetic field! I appear when solar wind particles follow magnetic field lines to the polar regions!",
+      "dancing": "I dance across the sky in beautiful colors - green, pink, purple, and blue! I appear when Flary's charged particles collide with atoms and molecules in Earth's upper atmosphere!",
+      "colors": "Each color tells a scientific story! Green auroras happen when oxygen atoms are excited at 100-300 km altitude, while red auroras occur at higher altitudes above 300 km. Blue and purple auroras come from nitrogen molecules!",
+      "magic": "The magic of auroras happens when charged particles from the Sun collide with gases in Earth's atmosphere, exciting electrons and causing them to emit light when they return to their ground state!",
+      "magneticField": "I follow Earth's magnetic field lines like a cosmic highway! The particles spiral along these invisible lines, guided by the magnetosphere to the polar regions!",
+      "altitude": "I appear at different altitudes in the atmosphere! Green auroras typically occur at 100-300 km, while red auroras can reach up to 500 km above Earth's surface!",
+      "seasons": "I'm more visible during the equinoxes in March and September, when Earth's magnetic field is optimally aligned with the solar wind!",
+      "solarCycle": "I'm more frequent and intense during solar maximum, when the Sun has more sunspots and solar activity! During solar minimum, I'm less common but still beautiful!"
+    }
+  },
+  "interactivePopups": {
+    "solarFacts": [
+      "X-class solar flares are the most powerful, releasing energy equivalent to a billion hydrogen bombs!",
+      "Solar flares travel at the speed of light - 186,000 miles per second - reaching Earth in just 8 minutes!",
+      "The Sun's magnetic fields get twisted and stretched until they snap and reconnect, releasing enormous energy!",
+      "Solar flares are classified A, B, C, M, and X - with X being the strongest and having no upper limit!",
+      "The most powerful solar flare ever recorded was an X28 in 2003, which overwhelmed our sensors!",
+      "Solar flares span the entire electromagnetic spectrum from X-rays to radio waves!"
+    ],
+    "auroraFacts": [
+      "Auroras occur when charged particles from the Sun collide with atoms in Earth's upper atmosphere!",
+      "Green auroras happen when oxygen atoms are excited at 100-300 km altitude!",
+      "Red auroras occur at higher altitudes above 300 km when oxygen atoms are excited!",
+      "Blue and purple auroras come from nitrogen molecules in the atmosphere!",
+      "Auroras are more visible during equinoxes when Earth's magnetic field aligns with solar wind!",
+      "The aurora borealis (northern lights) and aurora australis (southern lights) are mirror images!"
+    ],
+    "spaceWeatherFacts": [
+      "Geomagnetic storms can induce electrical currents in power grids, causing blackouts!",
+      "Solar storms can disrupt radio communications that pass through the upper atmosphere!",
+      "High-speed particles from solar eruptions can damage satellite electronics and solar panels!",
+      "Space weather affects astronauts in space and passengers in high-flying polar aircraft!",
+      "CMEs can reach Earth in as little as 15 hours, while slower ones take several days!",
+      "NASA's fleet of spacecraft monitors space weather 24/7 to protect our technology!"
+    ],
+    "satelliteFacts": [
+      "SOHO (Solar and Heliospheric Observatory) has been monitoring the Sun since 1995!",
+      "NASA's Parker Solar Probe gets close enough to 'touch' the Sun's corona!",
+      "STEREO spacecraft provide 360-degree views of the Sun from different locations!",
+      "ACE (Advanced Composition Explorer) monitors solar wind particles heading toward Earth!",
+      "DSCOVR (Deep Space Climate Observatory) provides early warning of incoming solar storms!",
+      "Satellites need special shielding to protect against radiation from solar storms!"
+    ],
+    "technologyFacts": [
+      "Solar storms can cause GPS navigation errors of up to 100 meters!",
+      "Radio blackouts from solar flares can last from minutes to hours!",
+      "Power grid transformers can be damaged by geomagnetic storm-induced currents!",
+      "Airlines reroute flights during severe space weather to avoid radiation exposure!",
+      "Satellite communications can be disrupted for days during major solar storms!",
+      "Space weather forecasting helps protect our technology-dependent society!"
+    ]
+  },
+  "storyNarration": {
+    "panel1": "Welcome to our space weather adventure! Meet Flary, an X-class solar flare born from twisted magnetic fields on the Sun. These magnetic fields snap and reconnect, releasing energy as powerful as a billion hydrogen bombs!",
+    "panel2": "Flary's energy travels at the speed of light - 186,000 miles per second - reaching Earth in just 8 minutes! This intense radiation spans the electromagnetic spectrum from X-rays to radio waves!",
+    "panel3": "Flary accelerates charged particles - electrons and protons - into space at incredible speeds! The fastest particles can travel 93 million miles from Sun to Earth in just 30 minutes, creating a radiation storm!",
+    "panel4": "An enormous Coronal Mass Ejection erupts from the Sun! This CME can blast billions of tons of electrically charged plasma into space, traveling at millions of miles per hour!",
+    "panel5": "The solar storm approaches Earth's magnetic field! When CMEs interact with Earth's magnetosphere, they can trigger geomagnetic storms that affect our technology and create beautiful auroras!",
+    "panel6": "Charged particles from Flary follow Earth's magnetic field lines to the poles, where they collide with atoms in our atmosphere, creating the aurora borealis and australis - nature's own light show!",
+    "panel7": "Meet Anna, a commercial airline pilot experiencing the effects firsthand! Solar storms can disrupt radio communications, affect GPS navigation, and create the most beautiful auroras visible from 35,000 feet!",
+    "panel8": "This is part of the Sun's 11-year activity cycle! During solar maximum, there are more sunspots, solar flares, and CMEs. NASA's fleet of spacecraft monitors every event to protect our technology-dependent society!"
+  },
+  "quizPrompts": {
+    "question1": "How long does it take for a solar flare's energy to reach Earth?",
+    "question2": "What causes the different colors of auroras?",
+    "question3": "What is a Coronal Mass Ejection (CME)?",
+    "question4": "How do solar storms affect technology on Earth?",
+    "question5": "What is the Sun's 11-year activity cycle?",
+    "question6": "Why are X-class solar flares the most dangerous?",
+    "question7": "How do charged particles from solar storms reach Earth's poles?",
+    "question8": "What role do Earth's magnetic field lines play in creating auroras?"
+  },
+  "quizAnswers": {
+    "question1": "Solar flare energy travels at the speed of light - 186,000 miles per second - reaching Earth in just 8 minutes!",
+    "question2": "Aurora colors depend on which gas particles are excited: green and red from oxygen atoms, blue and purple from nitrogen molecules!",
+    "question3": "A Coronal Mass Ejection is an enormous cloud of electrically charged plasma that can blast billions of tons of material into space!",
+    "question4": "Solar storms can disrupt radio communications, affect GPS navigation, damage satellites, and even cause power grid blackouts!",
+    "question5": "The Sun's 11-year activity cycle includes periods of high activity (solar maximum) with more sunspots, flares, and CMEs, and low activity (solar minimum)!",
+    "question6": "X-class solar flares are the most powerful, releasing energy equivalent to a billion hydrogen bombs and having no upper limit!",
+    "question7": "Charged particles follow Earth's magnetic field lines like a cosmic highway, spiraling along these invisible lines to the polar regions!",
+    "question8": "Earth's magnetic field lines guide charged particles to the poles, where they collide with atmospheric atoms, creating the beautiful aurora displays!"
+  },
+  "soundEffects": {
+    "flaryMovement": "Whoosh! Flary speeds through space with a cosmic whoosh sound!",
+    "auroraCreation": "Sparkle! The auroras shimmer and dance with magical sparkle sounds!",
+    "satelliteBeep": "Beep beep! The satellites send signals as they monitor space weather!",
+    "annaFlying": "Vroom! Anna's plane flies through the sky, experiencing the space weather!",
+    "celebration": "Cheer! Everyone celebrates the beautiful auroras and the amazing space weather adventure!"
+  },
+  "engagementPrompts": {
+    "encouragement": "Great job learning about space weather! You're becoming a space weather expert!",
+    "curiosity": "Isn't it amazing how the Sun affects Earth from millions of miles away?",
+    "wonder": "Look at those beautiful auroras! Nature's own light show in the sky!",
+    "learning": "You're learning so much about space weather! Keep exploring and discovering!"
+  },
+  "technicalSettings": {
+    "flaryVoice": {
+      "rate": 0.8,
+      "pitch": 1.2,
+      "volume": 1.0,
+      "voice": "female"
+    },
+    "annaVoice": {
+      "rate": 0.9,
+      "pitch": 1.1,
+      "volume": 1.0,
+      "voice": "female"
+    },
+    "auroraSpiritVoice": {
+      "rate": 0.7,
+      "pitch": 1.3,
+      "volume": 1.0,
+      "voice": "female"
+    },
+    "narratorVoice": {
+      "rate": 0.85,
+      "pitch": 1.0,
+      "volume": 1.0,
+      "voice": "male"
+    }
+  }
+}

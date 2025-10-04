@@ -1,0 +1,22 @@
+[
+  { "id": 1, "fact": "Solar flares can release energy equal to millions of nuclear bombs.", "category": "energy" },
+  { "id": 2, "fact": "Auroras are caused by charged particles colliding with Earth's atmosphere.", "category": "aurora" },
+  { "id": 3, "fact": "Strong solar storms can knock out power grids on Earth.", "category": "impact" },
+  { "id": 4, "fact": "The Sun's magnetic field flips every 11 years during solar maximum.", "category": "magnetic" },
+  { "id": 5, "fact": "Solar wind travels at speeds up to 800 km/s (500 miles per second).", "category": "speed" },
+  { "id": 6, "fact": "The largest solar storm in recorded history was the Carrington Event in 1859.", "category": "history" },
+  { "id": 7, "fact": "Auroras can be seen from space and even from other planets like Jupiter.", "category": "space" },
+  { "id": 8, "fact": "Solar flares are classified from A (weakest) to X (strongest) class.", "category": "classification" },
+  { "id": 9, "fact": "The International Space Station orbits in the Van Allen radiation belts.", "category": "iss" },
+  { "id": 10, "fact": "Solar storms can cause beautiful auroras visible as far south as Florida.", "category": "visibility" },
+  { "id": 11, "fact": "NASA's Parker Solar Probe is the fastest human-made object, reaching 700,000 km/h.", "category": "technology" },
+  { "id": 12, "fact": "The Sun's corona is hotter than its surface - over 1 million degrees Celsius.", "category": "temperature" },
+  { "id": 13, "fact": "Solar storms can disrupt GPS navigation systems used by airplanes and ships.", "category": "navigation" },
+  { "id": 14, "fact": "Auroras make sounds! People have reported hearing crackling and hissing sounds.", "category": "sounds" },
+  { "id": 15, "fact": "The Sun loses 4 million tons of mass every second through solar wind.", "category": "mass" },
+  { "id": 16, "fact": "Solar flares can cause radio blackouts that last for hours.", "category": "communication" },
+  { "id": 17, "fact": "Auroras on Jupiter are 100 times more powerful than Earth's auroras.", "category": "comparison" },
+  { "id": 18, "fact": "The Sun's magnetic field creates beautiful patterns called coronal loops.", "category": "patterns" },
+  { "id": 19, "fact": "Solar storms can cause compass needles to point in wrong directions.", "category": "navigation" },
+  { "id": 20, "fact": "The Northern Lights can be seen from space as a glowing ring around Earth.", "category": "space" }
+]
