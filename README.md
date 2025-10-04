@@ -1,6 +1,6 @@
 # 🚀 Orbiter-Tales
 
-![Orbiter-Tales Banner](src/assets/space-banner.png)  
+![Orbiter-Tales Banner](src/assets/orbiter tales.png)  
 *Interactive space adventure exploring space weather and planetary science.*
 
 ---
