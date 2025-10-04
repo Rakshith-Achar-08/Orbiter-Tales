@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Planet Animation</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+          /* More Info button style - orange gradient matching Sun theme */
+          #more-info-btn{
+              display: none; /* only shown when Sun info is active */
+               background: linear-gradient(135deg,#ffb347 0%,#ffcc33 100%);
+               border: none;
+               color: #2b1700;
+               padding: 10px 18px;
+               font-weight: 700;
+               border-radius: 28px;
+               box-shadow: 0 6px 18px rgba(255,153,0,0.25), inset 0 -3px 6px rgba(255,255,255,0.12);
+               cursor: pointer;
+               transition: transform .14s ease, box-shadow .14s ease, opacity .14s ease;
+          }
+           #more-info-btn:active { transform: translateY(1px) scale(.995); }
+           /* particle styles */
+           .sun-particle {
+               position: fixed;
+               width: 10px;
+               height: 10px;
+               border-radius: 50%;
+               pointer-events: none;
+               will-change: transform, opacity;
+               mix-blend-mode: screen;
+               opacity: 1;
+               transform: translate3d(0,0,0) scale(1);
+           }
+           /* modal shown after animation */
+           #sun-modal {
+               position: fixed;
+               inset: 0;
+               display: none;
+               align-items: center;
+               justify-content: center;
+               background: rgba(0,0,0,0.6);
+               z-index: 9999;
+           }
+           #sun-modal .modal-card {
+               max-width: 820px;
+               width: 94%;
+               background: linear-gradient(180deg,#fffaf0, #fff4e6);
+               border-radius: 12px;
+               padding: 22px;
+               box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+               color: #2b1700;
+               font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+               overflow: auto;
+           }
+           #sun-modal .close-sun-modal {
+               position: absolute;
+               right: 18px;
+               top: 14px;
+               background: transparent;
+               border: none;
+               font-size: 28px;
+               color: #5a2800;
+               cursor: pointer;
+           }
+       </style>
+    </head>
+        <body class="opening hide-UI view-2D zoom-large data-close controls-close">
+            <div id="navbar">
+                <a id="toggle-data" href="#data"><i class="icon-data"></i>Data</a>
+                <h1 class="headingOfh1">Our Solar System<br></h1>
+                <a id="toggle-controls" href="#controls"><i class="icon-controls"></i>Controls</a>
+            </div>
+            <div id="data">
+                <a class="sun" title="sun" href="#sunspeed">Sun</a>
+                <a class="mercury" title="mercury" href="#mercuryspeed">Mercury</a>
+                <a class="venus" title="venus" href="#venusspeed">Venus</a>
+                <a class="earth active" title="earth" href="#earthspeed">Earth</a>
+                <a class="mars" title="mars" href="#marsspeed">Mars</a>
+                <a class="jupiter" title="jupiter" href="#jupiterspeed">Jupiter</a>
+                <a class="saturn" title="saturn" href="#saturnspeed">Saturn</a>
+                <a class="uranus" title="uranus" href="#uranusspeed">Uranus</a>
+                <a class="neptune" title="neptune" href="#neptunespeed">Neptune</a>
+            </div>
+            <div id="controls">
+                <label class="set-view">
+                    <input type="checkbox" id="view-toggle">
+                    <span class="toggle-text">3D View</span>
+                </label>
+                <label class="set-zoom">
+                    <input type="checkbox">
+                    <span class="toggle-text">Zoom</span>
+                </label>
+                <label>
+                    <input type="radio" class="set-speed" name="scale" checked>
+                    <span>Speed</span>
+                </label>
+                <label>
+                    <input type="radio" class="set-size" name="scale">
+                    <span>Size</span>
+                </label>
+                <label>
+                    <input type="radio" class="set-distance" name="scale">
+                    <span>Distance</span>
+                </label>
+            </div>
+            <!-- Planet Information Card -->
+            <div id="planet-info-card" class="planet-info-hidden">
+                <div class="planet-info-content">
+                    <button id="close-planet-info" class="close-btn">&times;</button>
+                    <div class="planet-info-header">
+                        <h2 id="planet-name">Planet Name</h2>
+                        <div id="planet-icon" class="planet-icon"></div>
+                        <button id="more-info-btn" aria-hidden="true" title="More about the Sun">More Info</button>
+                    </div>
+                    <div class="planet-info-body">
+                        <div class="info-section">
+                            <h3>Distance from Sun</h3>
+                            <p id="planet-distance">Loading...</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Orbital Period</h3>
+                            <p id="planet-period">Loading...</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Diameter</h3>
+                            <p id="planet-diameter">Loading...</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Composition</h3>
+                            <p id="planet-composition">Loading...</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Moons</h3>
+                            <p id="planet-moons">Loading...</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Fun Fact</h3>
+                            <p id="planet-fact">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="universe" class="scale-stretched">
+                <div id="galaxy">
+                    <div id="solar-system" class="earth">
+                        <div id="mercury" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Mercury</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="venus" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Venus</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="earth" class="orbit">
+                            <div class="pos">
+                                <div class="orbit">
+                                    <div class="pos">
+                                        <div class="moon"></div>
+                                    </div>
+                                </div>
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Earth</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mars" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Mars</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="jupiter" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Jupiter</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="saturn" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <div class="ring"></div>
+                                    <dl class="infos">
+                                        <dt>Saturn</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="uranus" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Uranus</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="neptune" class="orbit">
+                            <div class="pos">
+                                <div class="planet">
+                                    <dl class="infos">
+                                        <dt>Neptune</dt>
+                                        <dd><span></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sun">
+                            <dl class="infos">
+                                <dt>Sun</dt>
+                                <dd><span></span></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+            <script src="script.js"></script>
+    </body>
+</html>
