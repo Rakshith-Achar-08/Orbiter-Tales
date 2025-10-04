@@ -226,7 +226,7 @@ const StoryPage = () => {
           <button onClick={resetStory} className="reset-btn">
             🔄 Reset
           </button>
-        </div>
+          </div>
 
         {/* Panel Navigation */}
         <div className="panel-nav">
@@ -239,15 +239,15 @@ const StoryPage = () => {
               {index + 1}
             </button>
           ))}
-        </div>
+            </div>
 
         {/* Current Panel Content */}
         <div className="panel-content">
           <h2 className="panel-title">{storyPanels[currentPanel].title}</h2>
           <p className="panel-text">{storyPanels[currentPanel].content}</p>
-        </div>
+            </div>
 
-        {/* Interactive Elements */}
+            {/* Interactive Elements */}
         <div className="interactive-elements">
           {/* Flary Avatar */}
           <div 
@@ -270,7 +270,7 @@ const StoryPage = () => {
             }}
           >
             🌟
-          </div>
+              </div>
 
           {/* Anna Avatar */}
           <div 
@@ -294,7 +294,7 @@ const StoryPage = () => {
             <div className="satellite" style={{ left: '30%', top: '20%' }}>🛰️</div>
             <div className="satellite" style={{ left: '50%', top: '30%' }}>🛰️</div>
             <div className="satellite" style={{ left: '70%', top: '25%' }}>🛰️</div>
-          </div>
+              </div>
 
           {/* Global Kids */}
           <div className="global-kids">
@@ -302,8 +302,8 @@ const StoryPage = () => {
             <div className="kid" style={{ left: '30%', top: '85%' }}>👦</div>
             <div className="kid" style={{ left: '60%', top: '82%' }}>👧</div>
             <div className="kid" style={{ left: '80%', top: '88%' }}>👦</div>
+            </div>
           </div>
-        </div>
 
         {/* Real-time Data Display */}
         {realTimeData && (
@@ -314,27 +314,27 @@ const StoryPage = () => {
             </div>
             <div className="data-item">
               <span>Geomagnetic Index: Kp {realTimeData.geomagneticIndex[0]?.kp || 'N/A'}</span>
-            </div>
+              </div>
             <div className="data-item">
               <span>Aurora Intensity: {auroraIntensity}%</span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Interactive Pop-ups */}
         <div className="pop-ups">
           <div className="pop-up" id="solar-fact">
             <h4>Did you know?</h4>
             <p>Solar flares can travel from the Sun to Earth in 8 minutes to several days!</p>
-          </div>
+              </div>
           <div className="pop-up" id="aurora-fact">
             <h4>Aurora Magic!</h4>
             <p>Auroras happen when charged particles from the Sun hit Earth's atmosphere.</p>
-          </div>
+            </div>
           <div className="pop-up" id="storm-fact">
             <h4>Space Weather Impact!</h4>
             <p>Geomagnetic storms can disrupt GPS signals, radios, and even power grids!</p>
-          </div>
+            </div>
         </div>
       </div>
     </div>
