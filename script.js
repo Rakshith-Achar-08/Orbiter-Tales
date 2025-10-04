@@ -162,21 +162,14 @@ $(document).ready(function(){
       // Update planet icon
       $("#planet-icon").removeClass().addClass("planet-icon " + planetName);
 
-      // Add more info button for Sun
+      // Show/hide more info button for Sun
       if (planetName === 'sun') {
-        console.log('Adding More Info button for Sun');
-        // Always add the button for Sun
-        $("#more-info-btn").remove(); // Remove any existing button first
-        $("#planet-info-body").append('<div class="info-section"><button id="more-info-btn" class="more-info-btn">More Info</button></div>');
-        console.log('More Info button added, count:', $("#more-info-btn").length);
-        
-        $("#more-info-btn").off('click').on('click', function(e) {
-          console.log('More Info button clicked!');
-          createSunAnimation(e);
+        $("#more-info-btn").show().off('click').on('click', function(e) {
+          e.preventDefault();
+          showSunDetailsPage();
         });
       } else {
-        console.log('Removing More Info button for planet:', planetName);
-        $("#more-info-btn").remove();
+        $("#more-info-btn").hide();
       }
 
       // Show the card and shift the body
@@ -209,92 +202,66 @@ $(document).ready(function(){
       }
     });
 
-    // Function to create Sun animation from mouse click point
-    function createSunAnimation(e) {
-      var clickX = e.pageX;
-      var clickY = e.pageY;
-      
-      // Create animation element
-      var animationElement = $('<div class="sun-animation"></div>');
-      animationElement.css({
-        position: 'fixed',
-        left: clickX + 'px',
-        top: clickY + 'px',
-        zIndex: 9999,
-        pointerEvents: 'none'
-      });
-      
-      // Add to body
-      $('body').append(animationElement);
-      
-      // Animate to Sun position
-      var sunElement = $('#sun');
-      var sunOffset = sunElement.offset();
-      var sunCenterX = sunOffset.left + sunElement.width() / 2;
-      var sunCenterY = sunOffset.top + sunElement.height() / 2;
-      
-      // Create multiple particles for effect
-      for (var i = 0; i < 5; i++) {
-        setTimeout(function() {
-          var particle = animationElement.clone();
-          particle.addClass('sun-particle-' + i);
-          $('body').append(particle);
-          
-          particle.animate({
-            left: sunCenterX + 'px',
-            top: sunCenterY + 'px',
-            opacity: 0
-          }, {
-            duration: 1500,
-            easing: 'easeInOutQuart',
-            complete: function() {
-              $(this).remove();
-            }
-          });
-        }, i * 100);
-      }
-      
-      // Show detailed info in a modal
-      setTimeout(function() {
-        showSunDetails();
-      }, 800);
-      
-      // Remove original animation element
-      setTimeout(function() {
-        animationElement.remove();
-      }, 2000);
-    }
-    
-    // Function to show detailed Sun information
-    function showSunDetails() {
+    // Function to show detailed Sun information page
+    function showSunDetailsPage() {
       var sunData = planetData.sun;
+      
+      // Create the modal with orange theme
       var modal = $('<div class="sun-details-modal"></div>');
       var content = $('<div class="sun-details-content"></div>');
       
       content.html(`
         <div class="sun-details-header">
-          <h2>${sunData.name} - Detailed Information</h2>
-          <button class="close-sun-details">&times;</button>
+          <div class="sun-icon-large">☀️</div>
+          <h2>The Sun - Our Star</h2>
+          <button class="close-sun-details" title="Close">&times;</button>
         </div>
         <div class="sun-details-body">
-          <div class="sun-detail-section">
-            <h3>Nuclear Fusion Process</h3>
-            <p>The Sun converts 600 million tons of hydrogen into helium every second through nuclear fusion, releasing enormous amounts of energy in the process.</p>
+          <div class="sun-detail-section highlight">
+            <h3>🌟 Overview</h3>
+            <p>${sunData.moreInfo}</p>
+          </div>
+          <div class="sun-stats-grid">
+            <div class="sun-stat">
+              <div class="stat-icon">📏</div>
+              <h4>Diameter</h4>
+              <p>${sunData.diameter}</p>
+            </div>
+            <div class="sun-stat">
+              <div class="stat-icon">🔄</div>
+              <h4>Rotation Period</h4>
+              <p>${sunData.period}</p>
+            </div>
+            <div class="sun-stat">
+              <div class="stat-icon">⚛️</div>
+              <h4>Composition</h4>
+              <p>${sunData.composition}</p>
+            </div>
+            <div class="sun-stat">
+              <div class="stat-icon">⚖️</div>
+              <h4>Mass</h4>
+              <p>${sunData.fact}</p>
+            </div>
           </div>
           <div class="sun-detail-section">
-            <h3>Solar Wind</h3>
-            <p>The Sun constantly emits a stream of charged particles called solar wind, which extends far beyond Pluto and creates the heliosphere.</p>
+            <h3>⚡ Nuclear Fusion Process</h3>
+            <p>The Sun converts 600 million tons of hydrogen into helium every second through nuclear fusion in its core, releasing enormous amounts of energy. This process has been ongoing for 4.6 billion years and will continue for another 5 billion years.</p>
           </div>
           <div class="sun-detail-section">
-            <h3>Solar Flares & Sunspots</h3>
-            <p>Solar flares are sudden bursts of energy from the Sun's surface, while sunspots are cooler, darker areas caused by magnetic field disturbances.</p>
+            <h3>🌊 Solar Wind</h3>
+            <p>The Sun constantly emits a stream of charged particles called solar wind, traveling at speeds of 400-750 km/s. This wind extends far beyond Pluto, creating a protective bubble called the heliosphere that shields our solar system from interstellar radiation.</p>
           </div>
           <div class="sun-detail-section">
-            <h3>Life Cycle</h3>
-            <p>The Sun is currently in its main sequence phase and will continue burning hydrogen for about 5 billion more years before becoming a red giant.</p>
+            <h3>🔥 Solar Flares & Sunspots</h3>
+            <p>Solar flares are sudden, intense bursts of radiation from the Sun's surface, releasing as much energy as a billion megatons of TNT. Sunspots are cooler, darker regions caused by intense magnetic field disturbances, appearing as dark spots on the Sun's surface.</p>
           </div>
           <div class="sun-detail-section">
-            <h3>${sunData.moreInfo}</h3>
+            <h3>🔄 Life Cycle</h3>
+            <p>The Sun is currently in its main sequence phase, steadily burning hydrogen in its core. In about 5 billion years, it will exhaust its hydrogen fuel and expand into a red giant, potentially engulfing Mercury and Venus. Eventually, it will shed its outer layers and become a white dwarf.</p>
+          </div>
+          <div class="sun-detail-section">
+            <h3>🌡️ Temperature Zones</h3>
+            <p>The Sun's core reaches a staggering 15 million°C (27 million°F), while its visible surface (photosphere) is about 5,500°C (9,932°F). Paradoxically, the corona (outer atmosphere) is much hotter at over 1 million°C, a phenomenon scientists are still studying.</p>
           </div>
         </div>
       `);
@@ -302,19 +269,42 @@ $(document).ready(function(){
       modal.append(content);
       $('body').append(modal);
       
+      // Animate in with orange glow effect
+      modal.css('opacity', '0').animate({opacity: 1}, 600);
+      content.css({
+        transform: 'scale(0.8)',
+        opacity: '0'
+      }).animate({
+        opacity: 1
+      }, 600).css({
+        transform: 'scale(1)',
+        transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      });
+      
       // Close functionality
       $('.close-sun-details').click(function() {
-        modal.remove();
+        modal.animate({opacity: 0}, 400, function() {
+          modal.remove();
+        });
       });
       
       modal.click(function(e) {
         if (e.target === this) {
-          modal.remove();
+          modal.animate({opacity: 0}, 400, function() {
+            modal.remove();
+          });
         }
       });
       
-      // Animate in
-      modal.hide().fadeIn(500);
+      // Close on escape key
+      $(document).on('keyup.sunmodal', function(e) {
+        if (e.keyCode === 27) {
+          modal.animate({opacity: 0}, 400, function() {
+            modal.remove();
+          });
+          $(document).off('keyup.sunmodal');
+        }
+      });
     }
 
 
