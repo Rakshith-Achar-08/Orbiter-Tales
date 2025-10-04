@@ -1,74 +1,96 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# 🚀 Orbiter-Tales
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Orbiter-Tales Banner](src/assets/space-banner.png)  
+*Interactive space adventure exploring space weather and planetary science.*
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🌌 About the Project
 
-### `npm start`
+**Orbiter-Tales** is an interactive educational web application designed for the **NASA Space Apps Challenge 2025**.  
+Our goal is to **engage users with the wonders of space weather**, planetary science, and interactive storytelling through a gamified experience.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This project combines:  
+- **Real-time space weather data**  
+- **Interactive visualizations** (React & Three.js)  
+- **Mini-games and quizzes** for learning  
+- **Customizable character avatars**  
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Agenda / Mission:**  
+1. Educate users about solar activity, auroras, and planetary impacts.  
+2. Make learning immersive through games and interactive simulations.  
+3. Inspire curiosity in STEM fields, particularly space exploration.  
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Key Features
 
-### `npm run build`
+- 🌞 **Aurora & Solar Activity Visualizer** – See real-time effects of solar storms on Earth.  
+- 🎮 **Gamified Learning Modules** – Solve challenges to unlock space facts.  
+- 🧑‍🚀 **Customizable Characters** – Players can choose avatars and explore scenarios.  
+- 📊 **Interactive Dashboards** – Visualize planetary and space weather data dynamically.  
+- 📚 **Educational Story Mode** – Explore space events through storytelling.  
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Feature                | Status         | Description                            |
+| ---------------------- | -------------- | -------------------------------------- |
+| Aurora Visualizer      | ✅ Done         | Real-time aurora & solar storm effects |
+| Solar Impact Dashboard | ✅ Done         | Interactive space weather charts       |
+| Mini-games & Quizzes   | ⚙️ In Progress | Gamified learning modules              |
+| Character Avatars      | ⚙️ In Progress | Customize player avatars               |
+| Multi-language Support | 🕒 Future      | Expand accessibility globally          |
+| Mobile Optimization    | 🕒 Future      | Fully responsive experience            |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠️ Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Node.js (>= 18.x recommended)
+- npm (comes with Node.js) or yarn
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Installation
+1. Clone the repository
+git clone https://github.com/Rakshith-Achar-08/Orbiter-Tales.git
+cd Orbiter-Tales
 
-## Learn More
+2. Install Dependencies
+npm install
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Start the development Server
+npm start
+Open http://localhost:3000
+ in your browser.
+The page will automatically reload if you make edits.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Available Scripts
+Command	Description
+npm start	Runs the app in development mode.
+npm test	Launches the test runner in watch mode.
+npm run build	Builds the app for production in the build folder.
+npm run eject	Ejects from Create React App (advanced users only).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+🔮 Future Improvements
 
-### Analyzing the Bundle Size
+Integration with live NASA APIs for space weather and planetary data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Additional mini-games and challenges for learning
 
-### Making a Progressive Web App
+Multi-language support for global engagement
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Mobile optimization and offline capabilities
 
-### Advanced Configuration
+📄 License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project is open source and available for use and contribution under the MIT License.
 
-### Deployment
+💡 Contact
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+For questions, collaboration, or demos, contact:
+Team Orbiter-Tales – NASA Space Apps Challenge 2025
+🌐 GitHub: https://github.com/Rakshith-Achar-08/Orbiter-Tales
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# Orbiter-Tales
->>>>>>> ec287d41b4471e00f23cc1d692df3471d61b1aa3
