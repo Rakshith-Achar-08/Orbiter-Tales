@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './StoryPage.css';
+import { storyInteractions } from '../utils/storyInteractions';
 
 const StoryPage = () => {
   const [currentPanel, setCurrentPanel] = useState(0);
@@ -10,6 +11,11 @@ const StoryPage = () => {
   const [dialogueStep, setDialogueStep] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [typedText, setTypedText] = useState('');
+  const [pattern, setPattern] = useState('dialogue'); // 'dialogue' | 'comic' | 'timeline'
+  const [ttsVolume, setTtsVolume] = useState(1);
+  const [ttsRate, setTtsRate] = useState(0.9);
+  const [narratorOn, setNarratorOn] = useState(true);
+  const [loudMode, setLoudMode] = useState(true);
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
@@ -148,10 +154,21 @@ const StoryPage = () => {
       if (i >= current.text.length) {
         clearInterval(interval);
         setIsTyping(false);
+        // Speak the full line when typing completes (character voice)
+        if (narratorOn) {
+          const voiceSettings = { volume: loudMode ? 1 : ttsVolume, rate: ttsRate };
+          if (current.speaker === 'Flary') {
+            storyInteractions.speak(current.text, { ...voiceSettings, pitch: 1.2 });
+          } else if (current.speaker === 'Anna') {
+            storyInteractions.speak(current.text, { ...voiceSettings, pitch: 1.0 });
+          } else {
+            storyInteractions.speak(current.text, voiceSettings);
+          }
+        }
       }
     }, 20);
     return () => clearInterval(interval);
-  }, [dialogueStep]);
+  }, [dialogueStep, narratorOn, ttsRate, ttsVolume, loudMode]);
 
   const handleChoice = (choice) => {
     if (typeof choice?.effect?.auroraDelta === 'number') {
@@ -257,18 +274,31 @@ const StoryPage = () => {
         setCurrentPanel(prev => prev + 1);
         setFlaryPosition(storyPanels[currentPanel + 1].flaryPos);
         setAuroraIntensity(storyPanels[currentPanel + 1].auroraIntensity);
+        if (narratorOn) {
+          // Prefer custom narration of current panel
+          storyInteractions.speak(
+            `${storyPanels[currentPanel + 1].title}. ${storyPanels[currentPanel + 1].content}`,
+            { volume: loudMode ? 1 : ttsVolume, rate: ttsRate }
+          );
+        }
       }, 3000);
 
       return () => clearTimeout(timer);
     } else if (currentPanel === storyPanels.length - 1) {
       setIsPlaying(false);
     }
-  }, [isPlaying, currentPanel, storyPanels]);
+  }, [isPlaying, currentPanel, storyPanels, narratorOn, ttsRate, ttsVolume, loudMode]);
 
   const handlePanelClick = (panelIndex) => {
     setCurrentPanel(panelIndex);
     setFlaryPosition(storyPanels[panelIndex].flaryPos);
     setAuroraIntensity(storyPanels[panelIndex].auroraIntensity);
+    if (narratorOn) {
+      storyInteractions.speak(
+        `${storyPanels[panelIndex].title}. ${storyPanels[panelIndex].content}`,
+        { volume: loudMode ? 1 : ttsVolume, rate: ttsRate }
+      );
+    }
   };
 
   const startStory = () => {
@@ -285,6 +315,13 @@ const StoryPage = () => {
     setAuroraIntensity(storyPanels[0].auroraIntensity);
   };
 
+  const narrateCurrentPanel = () => {
+    storyInteractions.speak(
+      `${storyPanels[currentPanel].title}. ${storyPanels[currentPanel].content}`,
+      { volume: loudMode ? 1 : ttsVolume, rate: ttsRate }
+    );
+  };
+
   return (
     <div className="story-page">
       {/* Galaxy Background Canvas */}
@@ -297,6 +334,33 @@ const StoryPage = () => {
 
       {/* Story Container */}
       <div className="story-container">
+        {/* Controls Row */}
+        <div className="controls-row">
+          <div className="pattern-tabs">
+            <button className={`tab-btn ${pattern === 'dialogue' ? 'active' : ''}`} onClick={() => setPattern('dialogue')}>Dialogue</button>
+            <button className={`tab-btn ${pattern === 'comic' ? 'active' : ''}`} onClick={() => setPattern('comic')}>Comic</button>
+            <button className={`tab-btn ${pattern === 'timeline' ? 'active' : ''}`} onClick={() => setPattern('timeline')}>Timeline</button>
+          </div>
+          <div className="tts-controls">
+            <label className="toggle">
+              <input type="checkbox" checked={narratorOn} onChange={(e) => setNarratorOn(e.target.checked)} />
+              <span>Narration</span>
+            </label>
+            <label className="toggle">
+              <input type="checkbox" checked={loudMode} onChange={(e) => setLoudMode(e.target.checked)} />
+              <span>Loud</span>
+            </label>
+            <label className="slider">
+              <span>Vol</span>
+              <input type="range" min="0" max="1" step="0.05" value={ttsVolume} onChange={(e) => setTtsVolume(parseFloat(e.target.value))} disabled={loudMode} />
+            </label>
+            <label className="slider">
+              <span>Rate</span>
+              <input type="range" min="0.5" max="1.3" step="0.05" value={ttsRate} onChange={(e) => setTtsRate(parseFloat(e.target.value))} />
+            </label>
+            <button className="speak-btn" onClick={narrateCurrentPanel}>🔊 Speak Panel</button>
+          </div>
+        </div>
         {/* Two-character Dialogue UI */}
         <div className="dialogue-wrapper">
           <div className="dialogue-card glass">
@@ -349,13 +413,41 @@ const StoryPage = () => {
               {index + 1}
             </button>
           ))}
-            </div>
+        </div>
 
-        {/* Current Panel Content */}
-        <div className="panel-content">
-          <h2 className="panel-title">{storyPanels[currentPanel].title}</h2>
-          <p className="panel-text">{storyPanels[currentPanel].content}</p>
-            </div>
+        {/* Patterned Presentation */}
+        {pattern === 'dialogue' && (
+          <div className="panel-content">
+            <h2 className="panel-title">{storyPanels[currentPanel].title}</h2>
+            <p className="panel-text">{storyPanels[currentPanel].content}</p>
+          </div>
+        )}
+
+        {pattern === 'comic' && (
+          <div className="comic-grid">
+            {storyPanels.map((p, idx) => (
+              <div key={p.id} className={`comic-cell ${idx === currentPanel ? 'active' : ''}`} onClick={() => handlePanelClick(idx)}>
+                <div className="comic-badge">{idx + 1}</div>
+                <div className="comic-title">{p.title}</div>
+                <div className="comic-text">{p.content}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {pattern === 'timeline' && (
+          <div className="timeline">
+            {storyPanels.map((p, idx) => (
+              <div key={p.id} className={`timeline-item ${idx === currentPanel ? 'active' : ''}`} onClick={() => handlePanelClick(idx)}>
+                <div className="dot" />
+                <div className="time-card">
+                  <div className="time-title">{p.title}</div>
+                  <div className="time-text">{p.content}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
             {/* Interactive Elements */}
         <div className="interactive-elements">
@@ -370,12 +462,10 @@ const StoryPage = () => {
             onClick={() => {
               // Trigger Flary's voice
               if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(
-                  "Hi kids! I'm Flary, a solar flare from the Sun! I travel millions of miles to Earth, and along the way, I meet satellites and create beautiful auroras. Let's go on an adventure together!"
+                storyInteractions.speak(
+                  "Hi kids! I'm Flary, a solar flare from the Sun! I travel millions of miles to Earth, and along the way, I meet satellites and create beautiful auroras. Let's go on an adventure together!",
+                  { volume: loudMode ? 1 : ttsVolume, rate: ttsRate, pitch: 1.2 }
                 );
-                utterance.rate = 0.8;
-                utterance.pitch = 1.2;
-                speechSynthesis.speak(utterance);
               }
             }}
           >
@@ -387,12 +477,10 @@ const StoryPage = () => {
             className="anna-avatar"
             onClick={() => {
               if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(
-                  "Hello! I'm Anna, a young pilot. Today, I will fly through the skies while learning about solar flares, CMEs, and auroras. Sometimes, space weather can make my instruments glitch, but it's also magical!"
+                storyInteractions.speak(
+                  "Hello! I'm Anna, a young pilot. Today, I will fly through the skies while learning about solar flares, CMEs, and auroras. Sometimes, space weather can make my instruments glitch, but it's also magical!",
+                  { volume: loudMode ? 1 : ttsVolume, rate: ttsRate, pitch: 1.05 }
                 );
-                utterance.rate = 0.9;
-                utterance.pitch = 1.1;
-                speechSynthesis.speak(utterance);
               }
             }}
           >
@@ -406,13 +494,7 @@ const StoryPage = () => {
             <div className="satellite" style={{ left: '70%', top: '25%' }}>🛰️</div>
               </div>
 
-          {/* Global Kids */}
-          <div className="global-kids">
-            <div className="kid" style={{ left: '10%', top: '80%' }}>👧</div>
-            <div className="kid" style={{ left: '30%', top: '85%' }}>👦</div>
-            <div className="kid" style={{ left: '60%', top: '82%' }}>👧</div>
-            <div className="kid" style={{ left: '80%', top: '88%' }}>👦</div>
-            </div>
+          {/* Global Kids removed as requested */}
           </div>
 
         {/* Real-time Data Display */}

@@ -1,9 +1,60 @@
 import React, { useState, useEffect } from 'react';
+import { spaceWeatherService } from '../services/spaceWeatherService';
 
 function ProfessionGames({ selectedCharacter }) {
   const [activeGameId, setActiveGameId] = useState(null);
   const [gameScore, setGameScore] = useState(0);
   const [gameActive, setGameActive] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(60);
+  const [difficulty, setDifficulty] = useState(1);
+  const [weatherInfo, setWeatherInfo] = useState({ kp: 3, level: 'unsettled', flare: 'M1.0', flareIntensity: 50 });
+  const [highScore, setHighScore] = useState(0);
+  const [mode, setMode] = useState('challenge'); // 'challenge' | 'practice'
+
+  // Fetch live space weather and compute difficulty multiplier (1.0 - 3.0)
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await spaceWeatherService.getComprehensiveData();
+        const latestKp = Array.isArray(data.geomagneticIndex) && data.geomagneticIndex.length > 0 ? data.geomagneticIndex[0].kp : 3;
+        const latestFlare = Array.isArray(data.solarFlares) && data.solarFlares.length > 0 ? data.solarFlares[0] : { classType: 'M1.0', intensity: 60 };
+        const flareIntensity = typeof latestFlare.intensity === 'number' ? latestFlare.intensity : 50;
+        const kpFactor = Math.min(1.8, 0.6 + (latestKp / 5));
+        const flareFactor = Math.min(1.6, 0.6 + (flareIntensity / 100));
+        const computed = Math.max(1, Math.min(3, parseFloat((kpFactor * flareFactor).toFixed(2))));
+        if (mounted) {
+          setDifficulty(computed);
+          setWeatherInfo({ kp: latestKp, level: spaceWeatherService.getGeomagneticLevel(latestKp), flare: latestFlare.classType || 'M1.0', flareIntensity });
+        }
+      } catch (e) {
+        // keep defaults on failure
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  // Countdown timer per run
+  useEffect(() => {
+    if (!gameActive) return;
+    if (mode !== 'challenge') return; // no timer in practice mode
+    if (timeRemaining <= 0) {
+      setGameActive(false);
+      return;
+    }
+    const t = setTimeout(() => setTimeRemaining(prev => prev - 1), 1000);
+    return () => clearTimeout(t);
+  }, [gameActive, timeRemaining, mode]);
+
+  const tips = (() => {
+    const list = [];
+    if (weatherInfo.kp >= 5) list.push('High Kp: expect radio/GPS disruptions; rely on backups.');
+    if (weatherInfo.kp <= 2) list.push('Quiet conditions: focus on accuracy and efficiency.');
+    if (weatherInfo.flare.startsWith('X') || weatherInfo.flare.startsWith('M')) list.push('Strong flare: prepare for radiation spikes and grid instability.');
+    if (difficulty >= 2.5) list.push('Difficulty high: actions give more reward but failures escalate quickly.');
+    if (list.length === 0) list.push('Moderate space weather: balanced risk—practice fundamentals.');
+    return list;
+  })();
 
   const games = {
     farmer: {
@@ -80,6 +131,27 @@ function ProfessionGames({ selectedCharacter }) {
         <p className="text-lg text-gray-600 mb-6">
           Experience the challenges {selectedCharacter.name} faces during space weather events!
         </p>
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <button
+            onClick={() => setMode('challenge')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${mode === 'challenge' ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}
+          >Challenge</button>
+          <button
+            onClick={() => setMode('practice')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${mode === 'practice' ? 'bg-green-600 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+          >Practice</button>
+        </div>
+        <div className="inline-flex flex-wrap items-center justify-center gap-3">
+          <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">Kp {weatherInfo.kp} · {weatherInfo.level}</span>
+          <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-semibold">Flare {weatherInfo.flare}</span>
+          <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">Difficulty ×{difficulty}</span>
+        </div>
+        <div className="mt-4 max-w-3xl mx-auto p-4 bg-gray-50 border border-gray-200 rounded-xl text-left">
+          <h4 className="font-bold text-gray-800 mb-2">Smart Tips</h4>
+          <ul className="list-disc pl-6 text-gray-700 text-sm space-y-1">
+            {tips.map((t, i) => (<li key={i}>{t}</li>))}
+          </ul>
+        </div>
       </div>
 
       {currentGame && (
@@ -98,9 +170,14 @@ function ProfessionGames({ selectedCharacter }) {
                 if (activeGameId) {
                   setActiveGameId(null);
                   setGameActive(false);
+                  setTimeRemaining(60);
                 } else {
                   setActiveGameId(currentGameKey);
                   setGameActive(true);
+                  setGameScore(0);
+                  setTimeRemaining(60);
+                  const saved = parseInt(localStorage.getItem(`highScore:${currentGameKey}`) || '0', 10);
+                  setHighScore(saved);
                 }
               }}
               className={`px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
@@ -115,6 +192,11 @@ function ProfessionGames({ selectedCharacter }) {
 
           {activeGameId && (
             <div className="border-t pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-gray-700 font-semibold">⏱️ {mode === 'challenge' ? 'Time' : 'Practice'}: <span className={`${timeRemaining <= 10 && mode==='challenge' ? 'text-red-600' : 'text-gray-900'}`}>{mode === 'challenge' ? `${timeRemaining}s` : 'Relaxed'}</span></div>
+                <div className="text-gray-700 font-semibold">🏆 High Score: <span className="text-gray-900">{highScore}</span></div>
+                <div className="text-gray-700 font-semibold">⭐ Score: <span className="text-gray-900">{gameScore}</span></div>
+              </div>
               {(() => {
                 const gameDef = games[activeGameId];
                 if (!gameDef) return null;
@@ -122,12 +204,28 @@ function ProfessionGames({ selectedCharacter }) {
                 return (
                   <ActiveGame
                     key={activeGameId}
-                    onScoreUpdate={setGameScore}
+                    onScoreUpdate={(s) => {
+                      setGameScore(s);
+                      if (s > highScore) {
+                        setHighScore(s);
+                        localStorage.setItem(`highScore:${activeGameId}`, `${s}`);
+                      }
+                    }}
                     gameActive={gameActive}
                     setGameActive={setGameActive}
+                    timeRemaining={timeRemaining}
+                    difficulty={difficulty}
+                    mode={mode}
                   />
                 );
               })()}
+              {mode === 'challenge' && !gameActive && (
+                <div className="mt-6 p-4 rounded-lg bg-gray-50 text-center">
+                  <h4 className="text-xl font-bold mb-2">Game Over</h4>
+                  <p className="text-gray-700">Final Score: {gameScore}</p>
+                  <p className="text-gray-500 text-sm">Space weather made it {difficulty >= 2 ? 'tough' : 'manageable'} today!</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -138,7 +236,7 @@ function ProfessionGames({ selectedCharacter }) {
 
 // Farmer Game Component
 function FarmerGame(props) {
-  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {}, timeRemaining = 60, difficulty = 1 } = props || {};
   const [seeds, setSeeds] = useState([]);
   const [gpsAccuracy, setGpsAccuracy] = useState(100);
   const [score, setScore] = useState(0);
@@ -147,8 +245,8 @@ function FarmerGame(props) {
     if (gameActive) {
       // Simulate GPS degradation during solar storms
       const interval = setInterval(() => {
-        setGpsAccuracy(prev => Math.max(20, prev - Math.random() * 10));
-      }, 2000);
+        setGpsAccuracy(prev => Math.max(20, prev - Math.random() * (8 * difficulty)));
+      }, 1600);
       return () => clearInterval(interval);
     }
   }, [gameActive]);
@@ -162,12 +260,16 @@ function FarmerGame(props) {
     
     // GPS accuracy affects planting precision
     const accuracy = gpsAccuracy / 100;
-    const offsetX = (Math.random() - 0.5) * (1 - accuracy) * 50;
-    const offsetY = (Math.random() - 0.5) * (1 - accuracy) * 50;
+    const jitter = 50 * difficulty;
+    const offsetX = (Math.random() - 0.5) * (1 - accuracy) * jitter;
+    const offsetY = (Math.random() - 0.5) * (1 - accuracy) * jitter;
     
     setSeeds(prev => [...prev, { x: x + offsetX, y: y + offsetY, id: Date.now() }]);
-    setScore(prev => prev + 1);
-    onScoreUpdate(score + 1);
+    setScore(prev => {
+      const next = prev + (accuracy > 0.8 ? 2 : 1);
+      onScoreUpdate(next);
+      return next;
+    });
   };
 
   return (
@@ -202,13 +304,14 @@ function FarmerGame(props) {
           />
         ))}
       </div>
+      <p className="mt-3 text-sm text-gray-600">Tip: Higher precision earns bonus points. Solar storms reduce GPS accuracy.</p>
     </div>
   );
 }
 
 // Pilot Game Component
 function PilotGame(props) {
-  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {}, difficulty = 1 } = props || {};
   const [radioStatus, setRadioStatus] = useState('Connected');
   const [gpsStatus, setGpsStatus] = useState('Active');
   const [score, setScore] = useState(0);
@@ -217,28 +320,28 @@ function PilotGame(props) {
     if (gameActive) {
       const interval = setInterval(() => {
         // Simulate radio blackouts
-        if (Math.random() < 0.3) {
+        if (Math.random() < 0.25 * difficulty) {
           setRadioStatus('Blackout');
-          setTimeout(() => setRadioStatus('Connected'), 3000);
+          setTimeout(() => setRadioStatus('Connected'), 2000);
         }
         
         // Simulate GPS disruptions
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.2 * difficulty) {
           setGpsStatus('Degraded');
-          setTimeout(() => setGpsStatus('Active'), 2000);
+          setTimeout(() => setGpsStatus('Active'), 1500);
         }
-      }, 1000);
+      }, 900);
       return () => clearInterval(interval);
     }
   }, [gameActive]);
 
   const handleNavigation = () => {
     if (radioStatus === 'Blackout' || gpsStatus === 'Degraded') {
-      setScore(prev => prev + 2); // Bonus for navigating during disruptions
+      setScore(prev => prev + (2 * difficulty)); // Bonus for navigating during disruptions
     } else {
       setScore(prev => prev + 1);
     }
-    onScoreUpdate(score);
+    onScoreUpdate(score + 1);
   };
 
   return (
@@ -275,7 +378,7 @@ function PilotGame(props) {
 
 // Photographer Game Component
 function PhotographerGame(props) {
-  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {}, difficulty = 1 } = props || {};
   const [auroras, setAuroras] = useState([]);
   const [equipmentStatus, setEquipmentStatus] = useState('Working');
   const [score, setScore] = useState(0);
@@ -290,15 +393,15 @@ function PhotographerGame(props) {
           y: Math.random() * 200,
           intensity: Math.random()
         }]);
-      }, 2000);
+      }, Math.max(700, 2200 - difficulty * 600));
       
       // Simulate equipment failures
       const equipmentInterval = setInterval(() => {
-        if (Math.random() < 0.4) {
+        if (Math.random() < 0.3 * difficulty) {
           setEquipmentStatus('Malfunctioning');
-          setTimeout(() => setEquipmentStatus('Working'), 3000);
+          setTimeout(() => setEquipmentStatus('Working'), 1800);
         }
-      }, 4000);
+      }, 3200);
       
       return () => {
         clearInterval(interval);
@@ -309,9 +412,9 @@ function PhotographerGame(props) {
 
   const takePhoto = (aurora) => {
     if (equipmentStatus === 'Working') {
-      setScore(prev => prev + Math.round(aurora.intensity * 10));
+      setScore(prev => prev + Math.round(aurora.intensity * 10 * difficulty));
       setAuroras(prev => prev.filter(a => a.id !== aurora.id));
-      onScoreUpdate(score);
+      onScoreUpdate(score + 1);
     }
   };
 
@@ -350,7 +453,7 @@ function PhotographerGame(props) {
 
 // Engineer Game Component
 function EngineerGame(props) {
-  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {}, difficulty = 1 } = props || {};
   const [powerLoad, setPowerLoad] = useState(50);
   const [gridStability, setGridStability] = useState(100);
   const [score, setScore] = useState(0);
@@ -359,14 +462,14 @@ function EngineerGame(props) {
     if (gameActive) {
       const interval = setInterval(() => {
         // Simulate geomagnetic storm effects
-        const stormEffect = Math.random() * 20;
+        const stormEffect = Math.random() * (18 * difficulty);
         setGridStability(prev => Math.max(0, prev - stormEffect));
         
         // Auto-adjust power load to maintain stability
         if (gridStability < 30) {
           setPowerLoad(prev => Math.max(20, prev - 5));
         }
-      }, 1000);
+      }, 900);
       return () => clearInterval(interval);
     }
   }, [gameActive, gridStability]);
@@ -374,7 +477,7 @@ function EngineerGame(props) {
   const adjustPowerLoad = (change) => {
     setPowerLoad(prev => Math.max(0, Math.min(100, prev + change)));
     setScore(prev => prev + 1);
-    onScoreUpdate(score);
+    onScoreUpdate(score + 1);
   };
 
   return (
@@ -430,7 +533,7 @@ function EngineerGame(props) {
 
 // Astronaut Game Component
 function AstronautGame(props) {
-  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {}, difficulty = 1 } = props || {};
   const [radiationLevel, setRadiationLevel] = useState(10);
   const [inShelter, setInShelter] = useState(false);
   const [score, setScore] = useState(0);
@@ -439,9 +542,9 @@ function AstronautGame(props) {
     if (gameActive) {
       const interval = setInterval(() => {
         // Simulate solar storm radiation
-        const stormIntensity = Math.random() * 50;
+        const stormIntensity = Math.random() * (40 * difficulty);
         setRadiationLevel(prev => Math.min(100, prev + stormIntensity));
-      }, 2000);
+      }, 1600);
       return () => clearInterval(interval);
     }
   }, [gameActive]);
@@ -449,9 +552,9 @@ function AstronautGame(props) {
   const seekShelter = () => {
     setInShelter(true);
     setRadiationLevel(prev => Math.max(5, prev - 30));
-    setScore(prev => prev + 2);
-    onScoreUpdate(score);
-    setTimeout(() => setInShelter(false), 3000);
+    setScore(prev => prev + Math.round(2 * difficulty));
+    onScoreUpdate(score + 1);
+    setTimeout(() => setInShelter(false), 2500);
   };
 
   return (

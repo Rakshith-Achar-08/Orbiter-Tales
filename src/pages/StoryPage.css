@@ -29,6 +29,64 @@
   justify-content: space-between;
 }
 
+/* Controls Row */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.pattern-tabs {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.tab-btn {
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  box-shadow: 0 4px 14px rgba(78,205,196,0.35);
+}
+
+.tts-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e5e7eb;
+}
+
+.slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e5e7eb;
+}
+
+.speak-btn {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
 /* Dialogue System */
 .dialogue-wrapper {
   position: relative;
@@ -177,8 +235,8 @@
 }
 
 .panel-btn {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
@@ -188,7 +246,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 800;
+  font-size: 1.2rem;
 }
 
 .panel-btn:hover {
@@ -198,8 +257,8 @@
 
 .panel-btn.active {
   background: linear-gradient(135deg, #4ecdc4, #44a08d);
-  transform: scale(1.2);
-  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 10px 24px rgba(78, 205, 196, 0.45);
 }
 
 /* Panel Content */
@@ -211,6 +270,97 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 20px;
 }
+
+/* Comic Grid */
+.comic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.comic-cell {
+  position: relative;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comic-cell.active {
+  box-shadow: 0 8px 24px rgba(78,205,196,0.35);
+  transform: translateY(-2px);
+}
+
+.comic-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #4ecdc4;
+  color: #0b1a24;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.comic-title {
+  color: #93c5fd;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.comic-text {
+  color: #e5e7eb;
+  font-size: 0.95rem;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  margin: 10px 0 26px 0;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #4ecdc4, transparent);
+}
+
+.timeline-item {
+  position: relative;
+  margin: 14px 0 14px 0;
+  cursor: pointer;
+}
+
+.timeline-item .dot {
+  position: absolute;
+  left: -2px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4ecdc4;
+  box-shadow: 0 0 12px rgba(78,205,196,0.6);
+}
+
+.time-card {
+  margin-left: 20px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.time-title { color: #93c5fd; font-weight: 700; margin-bottom: 6px; }
+.time-text { color: #e5e7eb; font-size: 0.95rem; }
 
 .panel-title {
   color: #4ecdc4;
@@ -248,7 +398,7 @@
   transition: all 0.5s ease;
   animation: flaryGlow 2s ease-in-out infinite alternate;
   filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
-  display: none; /* Hide faces */
+  display: block;
 }
 
 @keyframes flaryGlow {
@@ -280,7 +430,7 @@
   right: 20px;
   top: 20px;
   animation: annaFly 3s ease-in-out infinite;
-  display: none; /* Hide faces */
+  display: block;
 }
 
 @keyframes annaFly {
@@ -343,7 +493,7 @@
   pointer-events: auto;
   transition: all 0.3s ease;
   animation: kidWave 2s ease-in-out infinite;
-  display: none; /* Hide faces */
+  display: block;
 }
 
 @keyframes kidWave {
@@ -479,9 +629,12 @@
   }
   
   .panel-btn {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9rem;
+    width: 52px;
+    height: 52px;
+    font-size: 1.05rem;
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
   }
 }
 
