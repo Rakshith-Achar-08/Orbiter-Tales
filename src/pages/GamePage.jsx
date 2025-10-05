@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -7,10 +7,20 @@ function GamePage() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameActive, setGameActive] = useState(false);
-  const [gameMode, setGameMode] = useState('click'); // 'click', 'timed', 'memory'
+  const [gameMode, setGameMode] = useState('click'); // 'click', 'timed', 'memory', 'reaction', 'sequence'
   const [highScore, setHighScore] = useState(0);
   const [sunnyPosition, setSunnyPosition] = useState({ x: 50, y: 50 });
   const [showSunny, setShowSunny] = useState(false);
+  // Reaction Time state
+  const [reactionState, setReactionState] = useState('idle'); // 'idle' | 'waiting' | 'go' | 'tooSoon'
+  const [reactionMs, setReactionMs] = useState(null);
+  const reactionStartRef = useRef(0);
+  const reactionTimeoutRef = useRef(null);
+  // Sequence (Simon) state
+  const [sequence, setSequence] = useState([]); // array of 0..3
+  const [userIndex, setUserIndex] = useState(0);
+  const [isShowingSequence, setIsShowingSequence] = useState(false);
+  const [activePad, setActivePad] = useState(null); // 0..3 when flashing
 
   useEffect(() => {
     let timer;
@@ -38,6 +48,92 @@ function GamePage() {
       return () => clearInterval(interval);
     }
   }, [gameMode, gameActive]);
+
+  // Reaction Time: start waiting and then show 'GO' after random delay
+  const startReaction = () => {
+    setReactionState('waiting');
+    setReactionMs(null);
+    if (reactionTimeoutRef.current) clearTimeout(reactionTimeoutRef.current);
+    const delay = Math.floor(Math.random() * 2000) + 1200; // 1.2s - 3.2s
+    reactionTimeoutRef.current = setTimeout(() => {
+      setReactionState('go');
+      reactionStartRef.current = performance.now();
+    }, delay);
+  };
+
+  const handleReactionClick = () => {
+    if (reactionState === 'waiting') {
+      // Clicked too early
+      if (reactionTimeoutRef.current) clearTimeout(reactionTimeoutRef.current);
+      setReactionState('tooSoon');
+      setReactionMs(null);
+    } else if (reactionState === 'go') {
+      const elapsed = Math.floor(performance.now() - reactionStartRef.current);
+      setReactionMs(elapsed);
+      setReactionState('idle');
+      setHighScore(prev => (prev === 0 ? elapsed : Math.min(prev, elapsed))); // lower is better here
+    }
+  };
+
+  // Sequence (Simon): helpers
+  const pads = [
+    { id: 0, color: 'bg-red-400', glow: 'shadow-red-400' },
+    { id: 1, color: 'bg-green-400', glow: 'shadow-green-400' },
+    { id: 2, color: 'bg-blue-400', glow: 'shadow-blue-400' },
+    { id: 3, color: 'bg-yellow-400', glow: 'shadow-yellow-400' }
+  ];
+
+  const addToSequence = () => {
+    const next = Math.floor(Math.random() * 4);
+    setSequence(prev => [...prev, next]);
+    setUserIndex(0);
+  };
+
+  const playSequence = async (seq) => {
+    setIsShowingSequence(true);
+    for (let i = 0; i < seq.length; i++) {
+      setActivePad(seq[i]);
+      // brief flash
+      await new Promise(res => setTimeout(res, 450));
+      setActivePad(null);
+      await new Promise(res => setTimeout(res, 180));
+    }
+    setIsShowingSequence(false);
+  };
+
+  const startSequence = async () => {
+    setScore(0);
+    setSequence([]);
+    addToSequence();
+  };
+
+  useEffect(() => {
+    if (sequence.length > 0) {
+      (async () => {
+        await playSequence(sequence);
+      })();
+    }
+  }, [sequence]);
+
+  const handlePadClick = (padId) => {
+    if (isShowingSequence || sequence.length === 0) return;
+    const expected = sequence[userIndex];
+    if (padId === expected) {
+      setUserIndex(userIndex + 1);
+      setActivePad(padId);
+      setTimeout(() => setActivePad(null), 150);
+      if (userIndex + 1 === sequence.length) {
+        // completed round
+        setScore(prev => prev + 1);
+        if (score + 1 > highScore) setHighScore(score + 1);
+        setTimeout(() => addToSequence(), 400);
+      }
+    } else {
+      // wrong input, reset
+      setSequence([]);
+      setUserIndex(0);
+    }
+  };
 
   const handleClick = () => {
     if (gameMode === 'click') {
@@ -76,7 +172,7 @@ function GamePage() {
           {/* Game Mode Selection */}
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold mb-4 text-green-700">Choose Your Game Mode</h2>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-5 gap-4">
               <button
                 onClick={() => setGameMode('click')}
                 className={`p-4 rounded-lg border-2 transition-all ${
@@ -115,6 +211,32 @@ function GamePage() {
                 <h3 className="font-bold">Memory Game</h3>
                 <p className="text-sm text-gray-600">Catch Sunny when he appears!</p>
               </button>
+
+              <button
+                onClick={() => setGameMode('reaction')}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  gameMode === 'reaction' 
+                    ? 'border-green-400 bg-green-100' 
+                    : 'border-gray-200 hover:border-green-300'
+                }`}
+              >
+                <div className="text-3xl mb-2">⚡</div>
+                <h3 className="font-bold">Reaction Time</h3>
+                <p className="text-sm text-gray-600">Tap as soon as the screen says GO!</p>
+              </button>
+
+              <button
+                onClick={() => setGameMode('sequence')}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  gameMode === 'sequence' 
+                    ? 'border-green-400 bg-green-100' 
+                    : 'border-gray-200 hover:border-green-300'
+                }`}
+              >
+                <div className="text-3xl mb-2">🎼</div>
+                <h3 className="font-bold">Sequence</h3>
+                <p className="text-sm text-gray-600">Repeat the glowing pattern; it grows each round.</p>
+              </button>
             </div>
           </div>
 
@@ -122,7 +244,10 @@ function GamePage() {
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
               <div className="text-2xl font-bold text-green-700">Score: {score}</div>
-              <div className="text-2xl font-bold text-green-700">High Score: {highScore}</div>
+              <div className="text-2xl font-bold text-green-700">
+                {gameMode === 'reaction' ? 'Best: ' : 'High Score: '} {highScore}
+                {gameMode === 'reaction' && ' ms'}
+              </div>
               {gameMode === 'timed' && (
                 <div className="text-2xl font-bold text-red-600">Time: {timeLeft}s</div>
               )}
@@ -200,7 +325,64 @@ function GamePage() {
                 </div>
               )}
 
-              {gameActive && (
+              {gameMode === 'reaction' && (
+                <div>
+                  <p className="text-lg mb-6">
+                    {reactionState === 'idle' && 'Press Start, then tap the board as soon as it says GO!'}
+                    {reactionState === 'waiting' && 'Wait for it...'}
+                    {reactionState === 'go' && 'GO! Tap now!'}
+                    {reactionState === 'tooSoon' && 'Too soon! Try again.'}
+                  </p>
+                  <div
+                    onClick={handleReactionClick}
+                    className={`h-64 rounded-lg flex items-center justify-center text-3xl font-extrabold text-white transition-colors cursor-pointer 
+                      ${reactionState === 'go' ? 'bg-green-500 animate-pulse' : reactionState === 'waiting' ? 'bg-yellow-500' : reactionState === 'tooSoon' ? 'bg-red-500' : 'bg-blue-500'}`}
+                  >
+                    {reactionState === 'go' ? 'GO!' : reactionState === 'waiting' ? '...' : reactionState === 'tooSoon' ? 'Too soon!' : 'Ready?'}
+                  </div>
+                  <div className="mt-4 flex items-center gap-4 justify-center">
+                    <button
+                      onClick={startReaction}
+                      className="bg-green-400 px-6 py-3 rounded-lg text-lg font-bold hover:bg-green-500 text-white"
+                    >
+                      ▶️ Start
+                    </button>
+                    {reactionMs !== null && (
+                      <div className="text-xl font-bold text-gray-700">Your time: {reactionMs} ms</div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {gameMode === 'sequence' && (
+                <div>
+                  <p className="text-lg mb-6">Watch the pattern, then repeat it. It gets longer each round!</p>
+                  <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+                    {pads.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => handlePadClick(p.id)}
+                        className={`h-28 rounded-xl shadow-lg ${p.color} ${activePad === p.id ? 'ring-4 ring-white' : ''} ${isShowingSequence ? 'opacity-80' : 'opacity-100'} transition`}
+                        disabled={isShowingSequence}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center gap-4 justify-center">
+                    <button
+                      onClick={startSequence}
+                      className="bg-purple-400 px-6 py-3 rounded-lg text-lg font-bold hover:bg-purple-500 text-white"
+                      disabled={isShowingSequence}
+                    >
+                      ▶️ Start / Next Round
+                    </button>
+                    {sequence.length > 0 && (
+                      <div className="text-xl font-bold text-gray-700">Round: {sequence.length}</div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {(gameActive && gameMode !== 'sequence' && gameMode !== 'reaction') && (
                 <button
                   onClick={resetGame}
                   className="mt-4 bg-red-400 px-6 py-2 rounded-lg text-lg font-semibold hover:bg-red-500 transition-colors"

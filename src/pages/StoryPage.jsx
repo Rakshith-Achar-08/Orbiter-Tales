@@ -7,6 +7,9 @@ const StoryPage = () => {
   const [flaryPosition, setFlaryPosition] = useState({ x: 0, y: 0 });
   const [auroraIntensity, setAuroraIntensity] = useState(0);
   const [realTimeData, setRealTimeData] = useState(null);
+  const [dialogueStep, setDialogueStep] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typedText, setTypedText] = useState('');
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
@@ -85,6 +88,82 @@ const StoryPage = () => {
       speed: 80
     }
   ];
+
+  // Dialogue script between two characters
+  const dialogue = [
+    {
+      speaker: 'Flary',
+      avatar: '🌟',
+      text: "I'm Flary! I bring light and charged particles from the Sun.",
+      choices: [
+        { label: 'Tell me about auroras!', effect: { auroraDelta: 15, next: 1 } },
+        { label: 'Will this affect planes?', effect: { auroraDelta: 5, next: 2 } }
+      ]
+    },
+    {
+      speaker: 'Anna',
+      avatar: '✈️',
+      text: 'Auroras glow brighter when solar storms intensify near the poles!',
+      choices: [
+        { label: 'Make it brighter ✨', effect: { auroraDelta: 20, next: 3 } },
+        { label: 'Calm skies please 🌙', effect: { auroraDelta: -10, next: 3 } }
+      ]
+    },
+    {
+      speaker: 'Anna',
+      avatar: '✈️',
+      text: 'Pilots may switch radio frequencies and reroute polar flights.',
+      choices: [
+        { label: 'Boost the storm 💥', effect: { auroraDelta: 25, next: 3 } },
+        { label: 'Reduce activity 🧘', effect: { auroraDelta: -15, next: 3 } }
+      ]
+    },
+    {
+      speaker: 'Flary',
+      avatar: '🌟',
+      text: 'Great choice! Ready to continue the journey across panels?',
+      choices: [
+        { label: 'Auto-play ▶️', effect: { autoplay: true, next: 4 } },
+        { label: 'Manual explore ⏸️', effect: { autoplay: false, next: 4 } }
+      ]
+    },
+    {
+      speaker: 'Anna',
+      avatar: '✈️',
+      text: 'Use the numbered buttons below to hop through key moments!',
+      choices: []
+    }
+  ];
+
+  // Typewriter effect for dialogue
+  useEffect(() => {
+    const current = dialogue[dialogueStep];
+    if (!current) return;
+    setIsTyping(true);
+    setTypedText('');
+    let i = 0;
+    const interval = setInterval(() => {
+      i += 1;
+      setTypedText(current.text.slice(0, i));
+      if (i >= current.text.length) {
+        clearInterval(interval);
+        setIsTyping(false);
+      }
+    }, 20);
+    return () => clearInterval(interval);
+  }, [dialogueStep]);
+
+  const handleChoice = (choice) => {
+    if (typeof choice?.effect?.auroraDelta === 'number') {
+      setAuroraIntensity(prev => Math.max(0, Math.min(100, prev + choice.effect.auroraDelta)));
+    }
+    if (typeof choice?.effect?.autoplay === 'boolean') {
+      setIsPlaying(choice.effect.autoplay);
+    }
+    if (typeof choice?.effect?.next === 'number') {
+      setDialogueStep(choice.effect.next);
+    }
+  };
 
   // Fetch real-time space weather data
   useEffect(() => {
@@ -218,6 +297,37 @@ const StoryPage = () => {
 
       {/* Story Container */}
       <div className="story-container">
+        {/* Two-character Dialogue UI */}
+        <div className="dialogue-wrapper">
+          <div className="dialogue-card glass">
+            <div className="dialogue-header">
+              <div className="speaker">
+                <span className="avatar">{dialogue[dialogueStep]?.avatar}</span>
+                <span className="name">{dialogue[dialogueStep]?.speaker}</span>
+              </div>
+              <div className="intensity">Aurora: {auroraIntensity}%</div>
+            </div>
+            <div className={`dialogue-text ${isTyping ? 'typing' : ''}`}>
+              {typedText}
+            </div>
+            <div className="dialogue-choices">
+              {(dialogue[dialogueStep]?.choices || []).length === 0 ? (
+                <button
+                  className="choice-btn"
+                  onClick={() => setDialogueStep(Math.min(dialogueStep + 1, dialogue.length - 1))}
+                >
+                  Continue
+                </button>
+              ) : (
+                (dialogue[dialogueStep]?.choices || []).map((c, idx) => (
+                  <button key={idx} className="choice-btn" onClick={() => handleChoice(c)}>
+                    {c.label}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
         {/* Navigation */}
         <div className="story-nav">
           <button onClick={startStory} className="play-btn">

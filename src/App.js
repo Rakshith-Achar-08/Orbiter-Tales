@@ -11,6 +11,7 @@ import AuroraPage from './pages/AururaPage';
 import LearnPage from './pages/LearnPage';
 import FactsPage from './pages/FactsPage';
 import SolarImpactDashboardPage from './pages/SolarImpactDashboardPage';
+import SunDetailPage from './pages/SunDetailPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/learn" element={<LearnPage />} />
             <Route path="/facts" element={<FactsPage />} />
             <Route path="/dashboard" element={<SolarImpactDashboardPage />} />
+            <Route path="/sun" element={<SunDetailPage />} />
           </Routes>
         </div>
       </div>

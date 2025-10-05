@@ -459,109 +459,22 @@ $(document).ready(function () {
       }
     });
 
-    // Function to show detailed Sun information page
+    // Function to navigate to React app Sun detail page with transition
     function showSunDetailsPage() {
-      var sunData = planetData.sun;
-      
-      // Create the modal with orange theme
-      var modal = $('<div class="sun-details-modal"></div>');
-      var content = $('<div class="sun-details-content"></div>');
-      
-      content.html(`
-        <div class="sun-details-header">
-          <div class="sun-icon-large">☀️</div>
-          <h2>The Sun - Our Star</h2>
-          <button class="close-sun-details" title="Close">&times;</button>
-        </div>
-        <div class="sun-details-body">
-          <div class="sun-detail-section highlight">
-            <h3>🌟 Overview</h3>
-            <p>${sunData.moreInfo}</p>
-          </div>
-          <div class="sun-stats-grid">
-            <div class="sun-stat">
-              <div class="stat-icon">📏</div>
-              <h4>Diameter</h4>
-              <p>${sunData.diameter}</p>
-            </div>
-            <div class="sun-stat">
-              <div class="stat-icon">🔄</div>
-              <h4>Rotation Period</h4>
-              <p>${sunData.period}</p>
-            </div>
-            <div class="sun-stat">
-              <div class="stat-icon">⚛️</div>
-              <h4>Composition</h4>
-              <p>${sunData.composition}</p>
-            </div>
-            <div class="sun-stat">
-              <div class="stat-icon">⚖️</div>
-              <h4>Mass</h4>
-              <p>${sunData.fact}</p>
-            </div>
-          </div>
-          <div class="sun-detail-section">
-            <h3>⚡ Nuclear Fusion Process</h3>
-            <p>The Sun converts 600 million tons of hydrogen into helium every second through nuclear fusion in its core, releasing enormous amounts of energy. This process has been ongoing for 4.6 billion years and will continue for another 5 billion years.</p>
-          </div>
-          <div class="sun-detail-section">
-            <h3>🌊 Solar Wind</h3>
-            <p>The Sun constantly emits a stream of charged particles called solar wind, traveling at speeds of 400-750 km/s. This wind extends far beyond Pluto, creating a protective bubble called the heliosphere that shields our solar system from interstellar radiation.</p>
-          </div>
-          <div class="sun-detail-section">
-            <h3>🔥 Solar Flares & Sunspots</h3>
-            <p>Solar flares are sudden, intense bursts of radiation from the Sun's surface, releasing as much energy as a billion megatons of TNT. Sunspots are cooler, darker regions caused by intense magnetic field disturbances, appearing as dark spots on the Sun's surface.</p>
-          </div>
-          <div class="sun-detail-section">
-            <h3>🔄 Life Cycle</h3>
-            <p>The Sun is currently in its main sequence phase, steadily burning hydrogen in its core. In about 5 billion years, it will exhaust its hydrogen fuel and expand into a red giant, potentially engulfing Mercury and Venus. Eventually, it will shed its outer layers and become a white dwarf.</p>
-          </div>
-          <div class="sun-detail-section">
-            <h3>🌡️ Temperature Zones</h3>
-            <p>The Sun's core reaches a staggering 15 million°C (27 million°F), while its visible surface (photosphere) is about 5,500°C (9,932°F). Paradoxically, the corona (outer atmosphere) is much hotter at over 1 million°C, a phenomenon scientists are still studying.</p>
-          </div>
-        </div>
-      `);
-      
-      modal.append(content);
-      $('body').append(modal);
-      
-      // Animate in with orange glow effect
-      modal.css('opacity', '0').animate({opacity: 1}, 600);
-      content.css({
-        transform: 'scale(0.8)',
-        opacity: '0'
-      }).animate({
-        opacity: 1
-      }, 600).css({
-        transform: 'scale(1)',
-        transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      // Add fade-out transition
+      $("body").css({
+        transition: "opacity 0.8s ease",
+        opacity: "0",
       });
-      
-      // Close functionality
-      $('.close-sun-details').click(function() {
-        modal.animate({opacity: 0}, 400, function() {
-          modal.remove();
-        });
-      });
-      
-      modal.click(function(e) {
-        if (e.target === this) {
-          modal.animate({opacity: 0}, 400, function() {
-            modal.remove();
-          });
-        }
-      });
-      
-      // Close on escape key
-      $(document).on('keyup.sunmodal', function(e) {
-        if (e.keyCode === 27) {
-          modal.animate({opacity: 0}, 400, function() {
-            modal.remove();
-          });
-          $(document).off('keyup.sunmodal');
-        }
-      });
+
+      setTimeout(() => {
+        // Navigate to React app Sun detail page
+        // If React app runs on localhost:3000 (development)
+        window.location.href = "http://localhost:3000/sun";
+        
+        // For production, use relative path:
+        // window.location.href = "/sun";
+      }, 800);
     }
 
     init();

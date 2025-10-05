@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function ProfessionGames({ selectedCharacter }) {
-  const [activeGame, setActiveGame] = useState(null);
+  const [activeGameId, setActiveGameId] = useState(null);
   const [gameScore, setGameScore] = useState(0);
   const [gameActive, setGameActive] = useState(false);
 
@@ -52,6 +52,16 @@ function ProfessionGames({ selectedCharacter }) {
   };
 
   const currentGame = getCharacterGame();
+  const currentGameKey = (() => {
+    if (!selectedCharacter) return null;
+    const p = selectedCharacter.profession.toLowerCase();
+    if (p.includes('farmer')) return 'farmer';
+    if (p.includes('pilot')) return 'pilot';
+    if (p.includes('photographer')) return 'photographer';
+    if (p.includes('engineer')) return 'engineer';
+    if (p.includes('astronaut')) return 'astronaut';
+    return 'farmer';
+  })();
 
   if (!selectedCharacter) {
     return (
@@ -84,24 +94,40 @@ function ProfessionGames({ selectedCharacter }) {
 
           <div className="flex justify-center mb-6">
             <button
-              onClick={() => setActiveGame(activeGame ? null : currentGame.component)}
+              onClick={() => {
+                if (activeGameId) {
+                  setActiveGameId(null);
+                  setGameActive(false);
+                } else {
+                  setActiveGameId(currentGameKey);
+                  setGameActive(true);
+                }
+              }}
               className={`px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
-                activeGame 
+                activeGameId 
                   ? 'bg-red-500 hover:bg-red-600 text-white' 
                   : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white'
               }`}
             >
-              {activeGame ? '⏹️ Stop Game' : '🚀 Start Challenge'}
+              {activeGameId ? '⏹️ Stop Game' : '🚀 Start Challenge'}
             </button>
           </div>
 
-          {activeGame && (
+          {activeGameId && (
             <div className="border-t pt-6">
-              <currentGame.component 
-                onScoreUpdate={setGameScore}
-                gameActive={gameActive}
-                setGameActive={setGameActive}
-              />
+              {(() => {
+                const gameDef = games[activeGameId];
+                if (!gameDef) return null;
+                const ActiveGame = gameDef.component;
+                return (
+                  <ActiveGame
+                    key={activeGameId}
+                    onScoreUpdate={setGameScore}
+                    gameActive={gameActive}
+                    setGameActive={setGameActive}
+                  />
+                );
+              })()}
             </div>
           )}
         </div>
@@ -111,7 +137,8 @@ function ProfessionGames({ selectedCharacter }) {
 }
 
 // Farmer Game Component
-function FarmerGame({ onScoreUpdate, gameActive, setGameActive }) {
+function FarmerGame(props) {
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
   const [seeds, setSeeds] = useState([]);
   const [gpsAccuracy, setGpsAccuracy] = useState(100);
   const [score, setScore] = useState(0);
@@ -180,7 +207,8 @@ function FarmerGame({ onScoreUpdate, gameActive, setGameActive }) {
 }
 
 // Pilot Game Component
-function PilotGame({ onScoreUpdate, gameActive, setGameActive }) {
+function PilotGame(props) {
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
   const [radioStatus, setRadioStatus] = useState('Connected');
   const [gpsStatus, setGpsStatus] = useState('Active');
   const [score, setScore] = useState(0);
@@ -246,7 +274,8 @@ function PilotGame({ onScoreUpdate, gameActive, setGameActive }) {
 }
 
 // Photographer Game Component
-function PhotographerGame({ onScoreUpdate, gameActive, setGameActive }) {
+function PhotographerGame(props) {
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
   const [auroras, setAuroras] = useState([]);
   const [equipmentStatus, setEquipmentStatus] = useState('Working');
   const [score, setScore] = useState(0);
@@ -320,7 +349,8 @@ function PhotographerGame({ onScoreUpdate, gameActive, setGameActive }) {
 }
 
 // Engineer Game Component
-function EngineerGame({ onScoreUpdate, gameActive, setGameActive }) {
+function EngineerGame(props) {
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
   const [powerLoad, setPowerLoad] = useState(50);
   const [gridStability, setGridStability] = useState(100);
   const [score, setScore] = useState(0);
@@ -399,7 +429,8 @@ function EngineerGame({ onScoreUpdate, gameActive, setGameActive }) {
 }
 
 // Astronaut Game Component
-function AstronautGame({ onScoreUpdate, gameActive, setGameActive }) {
+function AstronautGame(props) {
+  const { onScoreUpdate = () => {}, gameActive = false, setGameActive = () => {} } = props || {};
   const [radiationLevel, setRadiationLevel] = useState(10);
   const [inShelter, setInShelter] = useState(false);
   const [score, setScore] = useState(0);
